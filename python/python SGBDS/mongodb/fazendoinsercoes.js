@@ -7,7 +7,7 @@ db.getCollection("clientes").insertOne({
     "idade":"18",
     "sexo":"masculino",
     "email":"clodoaldo@hotmail.com",
-    "tel":"16996451997"
+    "tel":"16996455897"
 })
 
 
