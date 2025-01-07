@@ -14,7 +14,7 @@ url = os.getenv('API2')
 
 #%%
 
-def get_api(api):
+def get_api(api: str)-> pd.DataFrame:
     try:
         response = requests.get(api)
         if response.status_code == 200:
@@ -26,7 +26,7 @@ def get_api(api):
         print(f"Erro na requisição: {e}")  
         return None
 
-def df_normalize(df_data):
+def df_normalize(df_data: pd.DataFrame) -> pd.DataFrame:
     if df_data is None or df_data.empty:
         print("Dataframe vazio")
         return None
@@ -38,7 +38,10 @@ def df_normalize(df_data):
         return df_all_columns
     else:
         print("Erro ou tentar normalizar o arquivo, pois a coluna 'nome' não existe")
+        return None
+    
     
 data = get_api(url)
 df_normalize(data).head(15)
+
 #%%
