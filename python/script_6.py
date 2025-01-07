@@ -14,7 +14,7 @@ url = os.getenv('API2')
 
 #%%
 
-def get_api(api: str)-> pd.DataFrame:
+def get_api(api: str) -> pd.DataFrame:
     try:
         response = requests.get(api)
         if response.status_code == 200:
