@@ -40,4 +40,4 @@ df_sem_tratar = lendo_mongo(
     collection_name="clientes" #nome da collections que tem no banco e usaremos
 )
     
-get_endereco_df(df_sem_tratar)
+get_endereco_df(df_sem_tratar)[0]
