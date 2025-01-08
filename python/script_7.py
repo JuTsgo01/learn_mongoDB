@@ -20,7 +20,8 @@ def conexao_mongodb(db_name, collection_name, data_insert=None, columns_exc=None
     client = MongoClient(MONGODB_URI) #URI é a string de acesso ao banco
     db = client.get_database(db_name) #Nome do database do MongoDb
     collection = db.get_collection(collection_name) #Nome da collection que está no db e você usará
-    collection.insert_many(data_insert)
+    collection.delete_many({}) #Deletando antes para toda vez que inserirmos o que vem da api, não duplicar o que já existe
+    collection.insert_many(data_insert) #Inserindo dados
 #%%
 
 def get_api(api: str) -> pd.DataFrame:
