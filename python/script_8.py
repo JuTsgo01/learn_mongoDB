@@ -1,17 +1,29 @@
+#Inserindo dados a partir de uma tranformação de dados estruturados em dados não estruturados para enserir no MongoDB
+#Aqui estamos fazendo um caminho contrário do que fariamos em um SQL
+#Partindo de um dados estruturado, tranformando em não estruturados e inserindo
+
 #%%
+#Inserindo dados no MongoDB diretamente do retorno da API - json
 from pymongo import MongoClient
 import pandas as pd
 from dotenv import load_dotenv
 import os
 import requests
 
+load_dotenv()
+
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_colwidth', None)
 load_dotenv()
 
-url = os.getenv('API2')
-
+#%%
+def conexao_mongodb(db_name, collection_name, data_insert=None, columns_exc=None, query=None, MONGODB_URI=os.getenv('URI')):
+    client = MongoClient(MONGODB_URI) #URI é a string de acesso ao banco
+    db = client.get_database(db_name) #Nome do database do MongoDb
+    collection = db.get_collection(collection_name) #Nome da collection que está no db e você usará
+    collection.delete_many({}) #Deletando antes para toda vez que inserirmos o que vem da api, não duplicar o que já existe
+    collection.insert_many(data_insert) #Inserindo dados
 #%%
 
 def get_api(api: str) -> pd.DataFrame:
@@ -43,13 +55,17 @@ def df_normalize(df_data: pd.DataFrame) -> pd.DataFrame:
                 partes = col_name.split('_')
                 df_all_columns = df_all_columns.rename(columns={col_name : f"{partes[-2]}_{partes[-1]}"})
             
-        return df_all_columns
+        return df_all_columns.to_dict(orient='records')
     else:
         print("Erro ou tentar normalizar o arquivo, pois a coluna 'nome' não existe")
         return None
-    
-    
-data = get_api(url)
-df_normalize(data).head()
+
+#%%   
+mapeamendo_db = conexao_mongodb(
+    db_name="IBGE", #Nome do DB que usaremos
+    collection_name="distritostwo", #nome da collections que tem no banco e usaremos
+    data_insert = df_normalize(get_api(os.getenv('API2')))) #dados que iremos inserir no banco de dados
+
+
 
 #%%
